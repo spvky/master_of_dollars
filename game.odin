@@ -22,7 +22,6 @@ Game_Mode :: enum {
 
 cube_model: rl.Model
 cube_transform: Transform
-x, y, z: Vec3
 
 game_init :: proc() {
 	init_world()
@@ -52,9 +51,7 @@ game_render :: proc() {
 		rl.WHITE,
 	)
 	rl.DrawSphere(my_point, 0.2, rl.WHITE)
-	rl.DrawSphere(x, 0.3, rl.BLUE)
-	rl.DrawSphere(y, 0.3, rl.GREEN)
-	rl.DrawSphere(z, 0.3, rl.RED)
+	draw_axis_gizmo(cube_transform)
 	rl.EndMode3D()
 	rl.EndDrawing()
 }
@@ -106,6 +103,36 @@ look_at_point :: proc(origin, target: Vec3, up_vector: Vec3 = VEC_Y) -> Quat {
 }
 
 
+draw_axis_gizmo :: proc(
+	transform: Transform,
+	handle_length: f32 = 3,
+	handle_scale: f32 = 0.1,
+	local: bool = true,
+) {
+	x, y, z: Vec3
+	if local {
+		x =
+			transform.translation +
+			l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_X)) * handle_length
+		y =
+			transform.translation +
+			l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_Y)) * handle_length
+		z =
+			transform.translation +
+			l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_Z)) * handle_length
+	} else {
+		x = transform.translation + VEC_X * handle_length
+		y = transform.translation + VEC_Y * handle_length
+		z = transform.translation + VEC_Z * handle_length
+	}
+	rl.DrawSphere(x, handle_scale, rl.BLUE)
+	rl.DrawLine3D(transform.translation, x, rl.BLUE)
+	rl.DrawSphere(y, handle_scale, rl.GREEN)
+	rl.DrawLine3D(transform.translation, y, rl.GREEN)
+	rl.DrawSphere(z, handle_scale, rl.RED)
+	rl.DrawLine3D(transform.translation, z, rl.RED)
+}
+
 game_update :: proc() {
 	delta := rl.GetFrameTime()
 	move_delta: Vec3
@@ -135,15 +162,6 @@ game_update :: proc() {
 	my_point += l.normalize0(move_delta) * 5 * delta
 	// cube_transform.angle = math.acos_f32(cube_transform.c_value)
 	cube_transform.rotation = look_at_point(cube_transform.translation, my_point)
-	x =
-		cube_transform.translation +
-		l.normalize0(l.quaternion_mul_vector3(cube_transform.rotation, VEC_X))
-	y =
-		cube_transform.translation +
-		l.normalize0(l.quaternion_mul_vector3(cube_transform.rotation, VEC_Y))
-	z =
-		cube_transform.translation +
-		l.normalize0(l.quaternion_mul_vector3(cube_transform.rotation, VEC_Z))
 
 	// rot_matrix := l.matrix4_from_quaternion(cube_transform.rotation)
 	//
