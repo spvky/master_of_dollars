@@ -6,6 +6,7 @@ import rl "vendor:raylib"
 world: World
 
 World :: struct {
+	player:    Player,
 	camera:    Camera,
 	colliders: [dynamic]Collider,
 }

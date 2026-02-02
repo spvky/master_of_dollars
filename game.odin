@@ -8,9 +8,9 @@ import rl "vendor:raylib"
 
 PI: f32 : f32(math.PI)
 TAU: f32 : 2 * PI
-// Dunno what else to call this
 HP: f32 : PI / 2
 
+Vec2 :: [2]f32
 Vec3 :: [3]f32
 
 my_point: Vec3
@@ -98,9 +98,14 @@ draw_axis_gizmo :: proc(
 }
 
 game_update :: proc() {
+	update_camera()
+	move_player()
+	free_all(context.temp_allocator)
+}
+
+look_test :: proc() {
 	delta := rl.GetFrameTime()
 	time := f32(rl.GetTime())
-	update_camera()
 	move_delta: Vec3
 	if rl.IsKeyDown(.W) {
 		move_delta.z -= 1
@@ -121,19 +126,12 @@ game_update :: proc() {
 	if rl.IsKeyDown(.SPACE) {
 		move_delta.y += 1
 	}
-
-	// rot := l.quaternion_from_euler_angle_y_f32((math.PI / 4) * delta)
-	// cube_transform.rotation = l.normalize(cube_transform.rotation * rot)
-
 	my_point += l.normalize0(move_delta) * 5 * delta
-	// cube_transform.angle = math.acos_f32(cube_transform.c_value)
 	cube_transform.rotation = l.quaternion_slerp(
 		cube_transform.rotation,
 		gm.look_at_point(cube_transform.translation, my_point),
 		delta * 10,
 	)
-
 	interpolated := gm.interpolate_lateral_vector(cube_transform.rotation, {0, 1})
 	sin_tester = interpolated * (math.sin(time) * 4)
-	free_all(context.temp_allocator)
 }
