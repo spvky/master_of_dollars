@@ -36,17 +36,19 @@ update_camera :: proc() {
 		rot_x += 1
 	}
 
+
 	camera.pitch += (math.PI / 4) * delta * rot_y
-	camera.yaw += (math.PI / 4) * delta * rot_x
 
-	tp := f32(math.PI * 2)
+	new_yaw := camera.yaw + ((math.PI / 4) * delta * rot_x)
+	camera.yaw = math.clamp(new_yaw, -HP, HP)
 
-	if camera.pitch < -tp {
-		camera.pitch += tp
+
+	if camera.pitch < -TAU {
+		camera.pitch += TAU
 	}
 
-	if camera.pitch > tp {
-		camera.pitch -= tp
+	if camera.pitch > TAU {
+		camera.pitch -= TAU
 	}
 
 	rotation_y := l.quaternion_from_euler_angle_y_f32(camera.pitch)

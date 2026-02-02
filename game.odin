@@ -6,6 +6,11 @@ import l "core:math/linalg"
 import gm "shared:ghst/math"
 import rl "vendor:raylib"
 
+PI: f32 : f32(math.PI)
+TAU: f32 : 2 * PI
+// Dunno what else to call this
+HP: f32 : PI / 2
+
 Vec3 :: [3]f32
 
 my_point: Vec3
