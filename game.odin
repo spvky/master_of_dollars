@@ -23,6 +23,7 @@ Game_Mode :: enum {
 
 cube_model: rl.Model
 cube_transform: Transform
+sin_tester: Vec3
 
 game_init :: proc() {
 	init_world()
@@ -32,9 +33,8 @@ game_init :: proc() {
 	rotation := l.quaternion_from_euler_angles_f32(45, 0, 22.5, .XYZ)
 	// my_cube = make_cube(VEC_0, VEC_1, rotation)
 	cube_transform = Transform {
-		translation = VEC_X,
-		rotation    = l.QUATERNIONF32_IDENTITY,
-		scale       = VEC_1,
+		rotation = l.QUATERNIONF32_IDENTITY,
+		scale    = VEC_1,
 	}
 }
 
@@ -42,6 +42,10 @@ game_render :: proc() {
 	rl.BeginDrawing()
 	rl.ClearBackground(rl.BLACK)
 	rl.BeginMode3D(world.camera)
+	rl.DrawCubeV(VEC_Z * 20, {40, 20, 1}, rl.RED)
+	rl.DrawCubeV(VEC_Z * -20, {40, 20, 1}, rl.PINK)
+	rl.DrawCubeV(VEC_X * 20, {1, 20, 40}, rl.BLUE)
+	rl.DrawCubeV(VEC_X * -20, {1, 20, 40}, rl.GREEN)
 	angle, axis := l.angle_axis_from_quaternion_f32(cube_transform.rotation)
 	rl.DrawModelEx(
 		cube_model,
@@ -54,6 +58,7 @@ game_render :: proc() {
 	rl.DrawSphere(my_point, 0.2, rl.WHITE)
 	draw_axis_gizmo(cube_transform)
 	rl.EndMode3D()
+	debug_overlay()
 	rl.EndDrawing()
 }
 
@@ -89,6 +94,8 @@ draw_axis_gizmo :: proc(
 
 game_update :: proc() {
 	delta := rl.GetFrameTime()
+	time := f32(rl.GetTime())
+	update_camera()
 	move_delta: Vec3
 	if rl.IsKeyDown(.W) {
 		move_delta.z -= 1
@@ -120,10 +127,8 @@ game_update :: proc() {
 		gm.look_at_point(cube_transform.translation, my_point),
 		delta * 10,
 	)
-	// cube_transform.rotation = look_at_point(cube_transform.translation, my_point)
 
-	// rot_matrix := l.matrix4_from_quaternion(cube_transform.rotation)
-	//
-	// point_in_front = l.quaternion_mul_vector3(cube_transform.rotation, VEC_Z)
-
+	interpolated := gm.interpolate_lateral_vector(cube_transform.rotation, {0, 1})
+	sin_tester = interpolated * (math.sin(time) * 4)
+	free_all(context.temp_allocator)
 }
