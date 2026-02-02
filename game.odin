@@ -3,6 +3,7 @@ package main
 import "core:fmt"
 import "core:math"
 import l "core:math/linalg"
+import gm "shared:ghst/math"
 import rl "vendor:raylib"
 
 Vec3 :: [3]f32
@@ -57,80 +58,33 @@ game_render :: proc() {
 }
 
 
-// Returns a quaternion from `origin` looking at `target`, only rotating on the y-axis
-look_at_point_raw :: proc(origin, target: Vec3) -> Quat {
-	forward := l.normalize0(target - origin)
-	half_angle := math.acos(l.dot(VEC_Z, forward)) * 0.5
-	axis := l.normalize0(l.cross(VEC_Z, forward))
-	qi := axis * math.sin(half_angle)
-	return transmute(Quat)[4]f32{qi.x, qi.y, qi.z, math.cos(half_angle)}
-}
-
-// Returns a quaternion from `origin` looking at `target` with an up vector of `up_vector`
-look_at_point :: proc(origin, target: Vec3, up_vector: Vec3 = VEC_Y) -> Quat {
-	forward := l.normalize0(target - origin)
-	up := l.normalize0(forward - up_vector * forward.y)
-
-	pitch, yaw := l.QUATERNIONF32_IDENTITY, l.QUATERNIONF32_IDENTITY
-	// yaw
-	if up.x != 0 {
-		half_angle_yaw := math.acos(l.dot(VEC_Z, up)) * 0.5
-		rot_axis := forward.x > 0 ? VEC_Y : -VEC_Y
-		//Quat axes
-		qa := rot_axis * math.sin(half_angle_yaw)
-		yaw = transmute(Quat)[4]f32{qa.x, qa.y, qa.z, math.cos(half_angle_yaw)}
-	} else if up.z < 0 {
-		yaw = transmute(Quat)[4]f32{0, math.sin_f32(math.PI * 0.5), 0, math.cos_f32(math.PI * 0.5)}
-	}
-	// pitch
-	if forward.y != 0 {
-		if l.length2(up) != 0 {
-			half_angle_pitch := math.acos(l.dot(forward, up)) * 0.5
-			rot_axis := forward.y < 0 ? VEC_X : -VEC_X
-			//Quat axes
-			qa := rot_axis * math.sin(half_angle_pitch)
-			pitch = transmute(Quat)[4]f32{qa.x, qa.y, qa.z, math.cos_f32(half_angle_pitch)}
-		} else {
-			pitch = transmute(Quat)[4]f32 {
-				math.sin_f32(math.PI * 0.25),
-				0,
-				0,
-				math.cos_f32(math.PI * 0.25),
-			}
-		}
-	}
-	return yaw * pitch
-}
-
-
 draw_axis_gizmo :: proc(
 	transform: Transform,
 	handle_length: f32 = 3,
 	handle_scale: f32 = 0.1,
 	local: bool = true,
 ) {
+	right, up, forward: Vec3
 	x, y, z: Vec3
+
 	if local {
-		x =
-			transform.translation +
-			l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_X)) * handle_length
-		y =
-			transform.translation +
-			l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_Y)) * handle_length
-		z =
-			transform.translation +
-			l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_Z)) * handle_length
+		x = l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_X))
+		right = transform.translation + x * handle_length
+		y = l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_Y))
+		up = transform.translation + y * handle_length
+		z = l.normalize0(l.quaternion_mul_vector3(transform.rotation, VEC_Z))
+		forward = transform.translation + z * handle_length
 	} else {
-		x = transform.translation + VEC_X * handle_length
-		y = transform.translation + VEC_Y * handle_length
-		z = transform.translation + VEC_Z * handle_length
+		right = transform.translation + VEC_X * handle_length
+		up = transform.translation + VEC_Y * handle_length
+		forward = transform.translation + VEC_Z * handle_length
 	}
-	rl.DrawSphere(x, handle_scale, rl.BLUE)
-	rl.DrawLine3D(transform.translation, x, rl.BLUE)
-	rl.DrawSphere(y, handle_scale, rl.GREEN)
-	rl.DrawLine3D(transform.translation, y, rl.GREEN)
-	rl.DrawSphere(z, handle_scale, rl.RED)
-	rl.DrawLine3D(transform.translation, z, rl.RED)
+	rl.DrawSphere(right, handle_scale, rl.BLUE)
+	rl.DrawLine3D(transform.translation, right, rl.BLUE)
+	rl.DrawSphere(up, handle_scale, rl.GREEN)
+	rl.DrawLine3D(transform.translation, up, rl.GREEN)
+	rl.DrawSphere(forward, handle_scale, rl.RED)
+	rl.DrawLine3D(transform.translation, forward, rl.RED)
 }
 
 game_update :: proc() {
@@ -150,18 +104,23 @@ game_update :: proc() {
 	}
 
 	if rl.IsKeyDown(.LEFT_CONTROL) {
-		move_delta.y += 1
-	}
-	if rl.IsKeyDown(.SPACE) {
 		move_delta.y -= 1
 	}
+	if rl.IsKeyDown(.SPACE) {
+		move_delta.y += 1
+	}
 
-	rot := l.quaternion_from_euler_angle_y_f32((math.PI / 4) * delta)
-	cube_transform.rotation = l.normalize(cube_transform.rotation * rot)
+	// rot := l.quaternion_from_euler_angle_y_f32((math.PI / 4) * delta)
+	// cube_transform.rotation = l.normalize(cube_transform.rotation * rot)
 
 	my_point += l.normalize0(move_delta) * 5 * delta
 	// cube_transform.angle = math.acos_f32(cube_transform.c_value)
-	cube_transform.rotation = look_at_point(cube_transform.translation, my_point)
+	cube_transform.rotation = l.quaternion_slerp(
+		cube_transform.rotation,
+		gm.look_at_point(cube_transform.translation, my_point),
+		delta * 10,
+	)
+	// cube_transform.rotation = look_at_point(cube_transform.translation, my_point)
 
 	// rot_matrix := l.matrix4_from_quaternion(cube_transform.rotation)
 	//
