@@ -62,6 +62,7 @@ game_render :: proc() {
 	draw_axis_gizmo(cube_transform)
 	rl.EndMode3D()
 	debug_overlay()
+	target_overlay()
 	rl.EndDrawing()
 }
 

@@ -11,7 +11,7 @@ Camera :: struct {
 	rotation:      Quat,
 	pitch, yaw:    f32,
 	mode:          Camera_Mode,
-	lockon_target: ^Entity,
+	lockon_target: int,
 }
 
 Camera_Mode :: enum {
@@ -62,9 +62,8 @@ update_camera :: proc() {
 		camera.position = VEC_Y + world.player.translation
 	case .Locked:
 		fmt.printfln("Lockon Target: %v", camera.lockon_target)
-		if camera.lockon_target != nil {
-			camera.rotation = gm.look_at_point(camera.position, camera.lockon_target.translation)
-		}
+		target_translation := entity_center(world.entities[camera.lockon_target])
+		camera.rotation = gm.look_at_point(camera.position, target_translation)
 		camera.position = VEC_Y + world.player.translation
 	case .Cutscene:
 	}
