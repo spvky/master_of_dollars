@@ -1,7 +1,6 @@
 package main
 
 import l "core:math/linalg"
-import rl "vendor:raylib"
 
 world: World
 
@@ -9,13 +8,17 @@ World :: struct {
 	player:    Player,
 	camera:    Camera,
 	colliders: [dynamic]Collider,
+	entities:  [dynamic]Entity,
 }
 
 init_world :: proc() {
 	world.camera = Camera {
 		rotation = l.QUATERNIONF32_IDENTITY,
 		raw = {up = VEC_Y, fovy = 45, target = VEC_0, projection = .PERSPECTIVE},
+		mode = .Locked,
 	}
+
+	world.player = Player{VEC_Z * -10}
 
 	world.colliders = make([dynamic]Collider, 0)
 }

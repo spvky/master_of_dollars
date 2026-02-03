@@ -7,10 +7,11 @@ import gm "shared:ghst/math"
 import rl "vendor:raylib"
 
 Camera :: struct {
-	using raw:  rl.Camera3D,
-	rotation:   Quat,
-	pitch, yaw: f32,
-	mode:       Camera_Mode,
+	using raw:     rl.Camera3D,
+	rotation:      Quat,
+	pitch, yaw:    f32,
+	mode:          Camera_Mode,
+	lockon_target: ^Entity,
 }
 
 Camera_Mode :: enum {
@@ -60,6 +61,11 @@ update_camera :: proc() {
 		camera.rotation = l.normalize(l.QUATERNIONF32_IDENTITY * rotation_y * rotation_x)
 		camera.position = VEC_Y + world.player.translation
 	case .Locked:
+		fmt.printfln("Lockon Target: %v", camera.lockon_target)
+		if camera.lockon_target != nil {
+			camera.rotation = gm.look_at_point(camera.position, camera.lockon_target.translation)
+		}
+		camera.position = VEC_Y + world.player.translation
 	case .Cutscene:
 	}
 	// Regardless of camera mode, we set the target based on the camera's forward vector, the goal is to never update target otherwise in order to have the cameras rotation be consistent and observable anywhere
