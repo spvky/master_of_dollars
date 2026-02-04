@@ -4,8 +4,9 @@ import l "core:math/linalg"
 import rl "vendor:raylib"
 
 Entity :: struct {
-	using transform: Transform,
-	tag:             Entity_Tag,
+	using transform:   Transform,
+	tag:               Entity_Tag,
+	using lockon_data: Lockon_Data,
 }
 
 Entity_Tag :: enum {
@@ -27,6 +28,20 @@ entity_center :: proc(entity: Entity) -> (center: Vec3) {
 		center = entity.translation + (VEC_Y * (entity.scale.y / 2))
 	}
 	return center
+}
+
+update_entity_lockon_data :: proc() {
+	for &entity in world.entities {
+		entity.screen_position = rl.GetWorldToScreen(entity_center(entity), world.camera.raw)
+		if entity.screen_position.x > f32(SCREEN_WIDTH) * 1.2 ||
+		   entity.screen_position.x < -f32(SCREEN_WIDTH) * 0.2 ||
+		   entity.screen_position.y > f32(SCREEN_HEIGHT) * 1.2 ||
+		   entity.screen_position.y < -f32(SCREEN_HEIGHT) * 0.2 {
+			entity.on_screen = false
+		} else {
+			entity.on_screen = true
+		}
+	}
 }
 
 init_entities :: proc() {

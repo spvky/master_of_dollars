@@ -2,8 +2,11 @@ package main
 
 import rl "vendor:raylib"
 
+SCREEN_WIDTH :: 1920
+SCREEN_HEIGHT :: 1080
+
 main :: proc() {
-	rl.InitWindow(1920, 1080, "Master of Dollars")
+	rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Master of Dollars")
 	defer rl.CloseWindow()
 
 	game_init()

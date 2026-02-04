@@ -69,6 +69,7 @@ game_render :: proc() {
 game_update :: proc() {
 	update_camera()
 	move_player()
+	update_entity_lockon_data()
 	free_all(context.temp_allocator)
 }
 
