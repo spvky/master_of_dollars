@@ -15,7 +15,7 @@ init_world :: proc() {
 	world.camera = Camera {
 		rotation = l.QUATERNIONF32_IDENTITY,
 		raw = {up = VEC_Y, fovy = 45, target = VEC_0, projection = .PERSPECTIVE},
-		mode = .Locked,
+		mode = .Free,
 	}
 
 	world.player = Player{VEC_Z * -10}
