@@ -31,7 +31,7 @@ update_camera :: proc() {
 			camera.mode = .Locked
 		case .Locked:
 			camera.mode = .Free
-			pitch, yaw, _ := l.pitch_yaw_roll_from_quaternion_f32(camera.rotation)
+			yaw := l.yaw_from_quaternion_f32(camera.rotation)
 			// camera.pitch = math.clamp(pitch, -HP, HP)
 			camera.pitch = 0
 			camera.yaw = yaw

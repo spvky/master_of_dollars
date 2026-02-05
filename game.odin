@@ -33,7 +33,6 @@ game_init :: proc() {
 	init_assets()
 	init_world()
 	init_entities()
-	rotation := l.quaternion_from_euler_angles_f32(45, 0, 22.5, .XYZ)
 }
 
 game_cleanup :: proc() {
@@ -49,20 +48,12 @@ game_render :: proc() {
 	rl.DrawCubeV(VEC_X * 20, {1, 20, 40}, rl.BLUE)
 	rl.DrawCubeV(VEC_X * -20, {1, 20, 40}, rl.GREEN)
 	draw_entities()
-	// angle, axis := l.angle_axis_from_quaternion_f32(cube_transform.rotation)
-	// rl.DrawModelEx(
-	// 	cube_model,
-	// 	cube_transform.translation,
-	// 	axis,
-	// 	math.to_degrees(angle),
-	// 	cube_transform.scale,
-	// 	rl.WHITE,
-	// )
 	rl.DrawSphere(my_point, 0.2, rl.WHITE)
 	draw_axis_gizmo(cube_transform)
 	rl.EndMode3D()
 	debug_overlay()
 	target_overlay()
+	draw_rune_wheel()
 	rl.EndDrawing()
 }
 
