@@ -2,6 +2,7 @@ package main
 
 import "core:fmt"
 import "core:math"
+import l "core:math/linalg"
 import "core:strings"
 import rl "vendor:raylib"
 
@@ -46,4 +47,32 @@ draw_rune_wheel :: proc() {
 
 		rl.DrawLineEx(start, end, 4, rl.WHITE)
 	}
+}
+
+draw_crosshair :: proc() {
+	mouse_pos := rl.GetMousePosition()
+	center := Vec2{f32(SCREEN_WIDTH) / 2, f32(SCREEN_HEIGHT) / 2}
+
+	pos_to_center := mouse_pos - center
+	crosshair_pos: Vec2
+	if l.length(pos_to_center) > f32(SCREEN_HEIGHT) / 2 {
+		norm := l.normalize0(pos_to_center)
+		crosshair_pos = center + (norm * (f32(SCREEN_HEIGHT) / 2))
+	} else {
+		crosshair_pos = mouse_pos
+	}
+
+	source := rl.Rectangle {
+		x      = 0,
+		y      = 0,
+		width  = 32,
+		height = 32,
+	}
+	dest := rl.Rectangle {
+		x      = crosshair_pos.x - 64,
+		y      = crosshair_pos.y - 64,
+		width  = 128,
+		height = 128,
+	}
+	rl.DrawTexturePro(assets.crosshair, source, dest, {0, 0}, 0, rl.WHITE)
 }

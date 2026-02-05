@@ -84,7 +84,6 @@ update_camera :: proc() {
 		camera.target_rotation = l.normalize(l.QUATERNIONF32_IDENTITY * rotation_y * rotation_x)
 		camera.position = VEC_Y + world.player.translation
 	case .Locked:
-		fmt.printfln("Lockon Target: %v", camera.lockon_target)
 		target_translation := entity_center(world.entities[camera.lockon_target])
 		camera.target_rotation = gm.look_at_point(camera.position, target_translation)
 		camera.position = VEC_Y + world.player.translation

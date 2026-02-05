@@ -53,6 +53,7 @@ game_render :: proc() {
 	rl.EndMode3D()
 	debug_overlay()
 	target_overlay()
+	draw_crosshair()
 	draw_rune_wheel()
 	rl.EndDrawing()
 }
