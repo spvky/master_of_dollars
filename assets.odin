@@ -5,6 +5,7 @@ import rl "vendor:raylib"
 assets: Assets
 
 Assets :: struct {
+	font:      rl.Font,
 	cube:      rl.Model,
 	cylinder:  rl.Model,
 	crosshair: rl.Texture,
@@ -16,4 +17,5 @@ init_assets :: proc() {
 	cylinder_mesh := rl.GenMeshCylinder(1, 1, 8)
 	assets.cylinder = rl.LoadModelFromMesh(cylinder_mesh)
 	assets.crosshair = rl.LoadTexture("assets/crosshair.png")
+	assets.font = rl.LoadFont("assets/font/dungeon-mode.ttf")
 }

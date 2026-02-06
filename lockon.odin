@@ -41,9 +41,18 @@ draw_rune_wheel :: proc() {
 	rl.DrawCircleLinesV(center, f32(SCREEN_HEIGHT) / 2.2, rl.BLUE)
 
 	for i in 0 ..< 10 {
-		theta := f32(i) * angle_diff + (PI / 10)
+		rune_theta := f32(i) * angle_diff
+		theta := rune_theta + (PI / 10)
 		start := Vec2{math.sin(theta) * start_radius, math.cos(theta) * start_radius} + center
 		end := Vec2{math.sin(theta) * end_radius, math.cos(theta) * end_radius} + center
+		rune_pos :=
+			Vec2 {
+				math.sin(rune_theta) * start_radius,
+				math.cos(rune_theta) * f32(SCREEN_HEIGHT) / 2,
+			} +
+			center -
+			Vec2{32, 32}
+		rl.DrawTextCodepoint(assets.font, 'A', rune_pos, 32, rl.WHITE)
 
 		rl.DrawLineEx(start, end, 4, rl.WHITE)
 	}
