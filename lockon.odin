@@ -32,31 +32,6 @@ target_overlay :: proc() {
 	}
 }
 
-draw_rune_wheel :: proc() {
-	center := Vec2{f32(SCREEN_WIDTH) / 2, f32(SCREEN_HEIGHT) / 2}
-	angle_diff := TAU / 10
-	start_radius := f32(SCREEN_HEIGHT) / 2.2
-	end_radius := f32(SCREEN_HEIGHT) / 2
-	rl.DrawCircleLinesV(center, f32(SCREEN_HEIGHT) / 2, rl.BLUE)
-	rl.DrawCircleLinesV(center, f32(SCREEN_HEIGHT) / 2.2, rl.BLUE)
-
-	for i in 0 ..< 10 {
-		rune_theta := f32(i) * angle_diff
-		theta := rune_theta + (PI / 10)
-		start := Vec2{math.sin(theta) * start_radius, math.cos(theta) * start_radius} + center
-		end := Vec2{math.sin(theta) * end_radius, math.cos(theta) * end_radius} + center
-		rune_pos :=
-			Vec2 {
-				math.sin(rune_theta) * start_radius,
-				math.cos(rune_theta) * f32(SCREEN_HEIGHT) / 2,
-			} +
-			center -
-			Vec2{32, 32}
-		rl.DrawTextCodepoint(assets.font, 'A', rune_pos, 32, rl.WHITE)
-
-		rl.DrawLineEx(start, end, 4, rl.WHITE)
-	}
-}
 
 draw_crosshair :: proc() {
 	crosshair_pos := world.camera.cursor_pos

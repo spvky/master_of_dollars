@@ -56,6 +56,7 @@ game_render :: proc() {
 	target_overlay()
 	draw_crosshair()
 	draw_rune_wheel()
+	draw_spell()
 	rl.EndDrawing()
 }
 
@@ -64,6 +65,7 @@ game_update :: proc() {
 	move_player()
 	update_entity_lockon_data()
 	handle_cursor()
+	handle_rune_wheel()
 	free_all(context.temp_allocator)
 }
 

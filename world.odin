@@ -5,10 +5,11 @@ import l "core:math/linalg"
 world: World
 
 World :: struct {
-	player:    Player,
-	camera:    Camera,
-	colliders: [dynamic]Collider,
-	entities:  [dynamic]Entity,
+	player:     Player,
+	camera:     Camera,
+	colliders:  [dynamic]Collider,
+	entities:   [dynamic]Entity,
+	rune_wheel: Rune_Wheel,
 }
 
 init_world :: proc() {
@@ -21,4 +22,5 @@ init_world :: proc() {
 	world.player = Player{VEC_Z * -10}
 
 	world.colliders = make([dynamic]Collider, 0)
+	init_runes()
 }
