@@ -1,5 +1,6 @@
 package main
 
+import "core:fmt"
 import "core:math"
 import l "core:math/linalg"
 import rl "vendor:raylib"
@@ -38,6 +39,7 @@ detect_rune_collision :: proc() {
 			if l.distance(pos, rune_pos) < 100 {
 				wheel.spell[wheel.spell_count] = i
 				wheel.spell_count += 1
+				fmt.printfln("%v was added to spell", wheel.runes[i])
 			}
 		}
 	}
@@ -52,7 +54,7 @@ reset_spell :: proc() {
 is_rune_in_spell :: proc(index: int) -> (in_spell: bool) {
 	if world.rune_wheel.spell_count > 0 {
 		for i in 0 ..< world.rune_wheel.spell_count {
-			if i == index {
+			if world.rune_wheel.spell[i] == index {
 				in_spell = true
 				return
 			}
@@ -67,11 +69,8 @@ calculate_rune_position :: proc(index: int) -> Vec2 {
 	angle_diff := TAU / f32(wheel.rune_count)
 	rune_theta := f32(index) * angle_diff
 	radius := f32(SCREEN_HEIGHT) / 2
-	return(
-		Vec2{math.sin(rune_theta) * radius, math.cos(rune_theta) * radius} +
-		center -
-		Vec2{32, 32} \
-	)
+	return Vec2{math.sin(rune_theta) * radius, math.cos(rune_theta) * radius} + center //- Vec2{32, 32} \
+
 }
 
 
