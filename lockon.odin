@@ -50,17 +50,7 @@ draw_rune_wheel :: proc() {
 }
 
 draw_crosshair :: proc() {
-	mouse_pos := rl.GetMousePosition()
-	center := Vec2{f32(SCREEN_WIDTH) / 2, f32(SCREEN_HEIGHT) / 2}
-
-	pos_to_center := mouse_pos - center
-	crosshair_pos: Vec2
-	if l.length(pos_to_center) > f32(SCREEN_HEIGHT) / 2 {
-		norm := l.normalize0(pos_to_center)
-		crosshair_pos = center + (norm * (f32(SCREEN_HEIGHT) / 2))
-	} else {
-		crosshair_pos = mouse_pos
-	}
+	crosshair_pos := world.camera.cursor_pos
 
 	source := rl.Rectangle {
 		x      = 0,

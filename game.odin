@@ -33,6 +33,7 @@ game_init :: proc() {
 	init_assets()
 	init_world()
 	init_entities()
+	init_settings()
 }
 
 game_cleanup :: proc() {
@@ -62,6 +63,7 @@ game_update :: proc() {
 	update_camera()
 	move_player()
 	update_entity_lockon_data()
+	handle_cursor()
 	free_all(context.temp_allocator)
 }
 

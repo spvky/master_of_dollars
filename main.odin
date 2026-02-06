@@ -7,6 +7,7 @@ SCREEN_HEIGHT :: 1080
 
 main :: proc() {
 	rl.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Master of Dollars")
+	rl.DisableCursor()
 	defer rl.CloseWindow()
 
 	game_init()
