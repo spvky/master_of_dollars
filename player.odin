@@ -26,5 +26,5 @@ move_player :: proc() {
 	}
 
 	move_delta := gm.interpolate_lateral_vector(world.camera.rotation, raw_delta)
-	player.translation += move_delta * 5 * delta
+	player.translation += move_delta * 20 * delta
 }

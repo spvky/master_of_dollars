@@ -8,8 +8,13 @@ import rl "vendor:raylib"
 Rune_Wheel :: struct {
 	runes:       [10]rune,
 	rune_count:  int,
-	spell:       [10]int,
-	spell_count: int,
+	using spell: Spell,
+}
+
+Spell :: struct {
+	spell_indices: [10]int,
+	spell_count:   int,
+	spell_closed:  bool,
 }
 
 init_runes :: proc() {
@@ -21,12 +26,19 @@ init_runes :: proc() {
 
 draw_spell :: proc() {
 	wheel := &world.rune_wheel
+	spell_color := wheel.spell_closed ? rl.PURPLE : rl.YELLOW
 	if wheel.spell_count > 1 {
 		for i in 0 ..< wheel.spell_count - 1 {
-			a := calculate_rune_position(wheel.spell[i])
-			b := calculate_rune_position(wheel.spell[i + 1])
-			rl.DrawLineEx(a, b, 10, rl.YELLOW)
+			a := calculate_rune_position(wheel.spell_indices[i])
+			b := calculate_rune_position(wheel.spell_indices[i + 1])
+			rl.DrawLineEx(a, b, 10, spell_color)
 		}
+	}
+
+	if wheel.spell_closed {
+		a := calculate_rune_position(wheel.spell_indices[0])
+		b := calculate_rune_position(wheel.spell_indices[wheel.spell_count - 1])
+		rl.DrawLineEx(a, b, 10, spell_color)
 	}
 }
 
@@ -34,10 +46,10 @@ detect_rune_collision :: proc() {
 	wheel := &world.rune_wheel
 	pos := world.camera.cursor_pos
 	for i in 0 ..< world.rune_wheel.rune_count {
-		if !is_rune_in_spell(i) {
+		if !is_rune_in_spell(i) && !wheel.spell_closed {
 			rune_pos := calculate_rune_position(i)
 			if l.distance(pos, rune_pos) < 100 {
-				wheel.spell[wheel.spell_count] = i
+				wheel.spell_indices[wheel.spell_count] = i
 				wheel.spell_count += 1
 				fmt.printfln("%v was added to spell", wheel.runes[i])
 			}
@@ -47,14 +59,21 @@ detect_rune_collision :: proc() {
 
 reset_spell :: proc() {
 	if rl.IsMouseButtonPressed(.LEFT) {
-		world.rune_wheel.spell_count = 0
+		if !world.rune_wheel.spell_closed {
+			if world.rune_wheel.spell_count > 1 {
+				world.rune_wheel.spell_closed = true
+			}
+		} else {
+			world.rune_wheel.spell_count = 0
+			world.rune_wheel.spell_closed = false
+		}
 	}
 }
 
 is_rune_in_spell :: proc(index: int) -> (in_spell: bool) {
 	if world.rune_wheel.spell_count > 0 {
 		for i in 0 ..< world.rune_wheel.spell_count {
-			if world.rune_wheel.spell[i] == index {
+			if world.rune_wheel.spell_indices[i] == index {
 				in_spell = true
 				return
 			}

@@ -16,3 +16,8 @@ Shopping:
 - There is also an E-bay equivalent where you can bid on items (Rarer items have a chance to appear here, but some common items can be bought as well and surge pricing does not effect)
 
 
+Fri 06 Feb 2026 05:16:27 PM EST
+
+Runes:
+- Could be fun to design my own runes
+- Would like them to not be just different elements
