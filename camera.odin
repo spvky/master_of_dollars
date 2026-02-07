@@ -26,7 +26,7 @@ update_camera :: proc() {
 	delta := rl.GetFrameTime()
 	camera := &world.camera
 
-	if rl.IsKeyPressed(.L) {
+	if rl.IsKeyPressed(.LEFT_CONTROL) {
 		switch camera.mode {
 		case .Free:
 			camera.mode = .Locked
