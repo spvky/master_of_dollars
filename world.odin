@@ -5,7 +5,8 @@ import rl "vendor:raylib"
 world: World
 
 World :: struct {
-	camera: rl.Camera2D,
+	camera:   rl.Camera2D,
+	entities: Entity_Manager,
 }
 
 

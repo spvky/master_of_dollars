@@ -13,6 +13,9 @@ game_init :: proc() {
 }
 
 game_update :: proc() {
+	if rl.IsKeyPressed(.SPACE) {
+		write_entities_to_file()
+	}
 	render()
 }
 
