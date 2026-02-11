@@ -6,10 +6,20 @@ import "core:os"
 MAX_ENTITIES :: 1024
 
 Entity_Manager :: struct {
-	items:    [MAX_ENTITIES]Entity,
-	occupied: [MAX_ENTITIES]bool,
+	items:      [MAX_ENTITIES]Entity,
+	occupied:   [MAX_ENTITIES]bool,
+	empty_slot: Idx,
+	player_idx: Idx,
 }
 
+Entity_Iter :: struct {
+	entities: []Entity,
+	idx:      Idx,
+}
+
+get_player :: proc() -> ^Entity {
+	return get(world.entities.player_idx)
+}
 get :: proc(idx: Idx) -> ^Entity {
 	if idx == 0 {
 		log.error("Attempted to `get` at idx = 0")

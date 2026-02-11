@@ -5,6 +5,7 @@ Idx :: distinct u16
 Entity :: struct {
 	pos:          Vec2,
 	velocity:     Vec2,
+	rotation:     f32,
 	target:       Idx,
 	idx:          Idx,
 	parent_idx:   Idx,
