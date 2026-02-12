@@ -1,5 +1,8 @@
 package main
 
+import "core:log"
+import rl "vendor:raylib"
+
 Idx :: distinct u16
 
 Entity :: struct {
@@ -7,6 +10,7 @@ Entity :: struct {
 	velo:         Vec2,
 	m_delta:      Vec2,
 	rotation:     f32,
+	speed:        f32,
 	traits:       bit_set[Entity_Trait;u64],
 	state:        bit_set[Entity_State],
 	kind:         Entity_Kind,
@@ -45,4 +49,38 @@ Entity_Kind :: enum {
 	Player,
 	NPC,
 	Object,
+}
+
+entity_movement :: proc(delta: f32) {
+	entities := &world.entities
+	for i in 1 ..< entities.empty_slot {
+		if entities.used[i] {
+			e := &entities.items[i]
+			e.pos += e.m_delta * e.speed * delta
+		}
+	}
+}
+
+entity_idx_tracking :: proc() {
+	entities := &world.entities
+	for i in 1 ..< entities.empty_slot {
+		if entities.used[i] {
+			e := &entities.items[i]
+			e.prev_idx = e.curr_idx
+			e.curr_idx = i
+
+			//Handle idx mismatch here after movement
+		}
+	}
+}
+
+render_entities :: proc() {
+	entities := world.entities
+	for i in 1 ..< entities.empty_slot {
+		if entities.used[i] {
+			e := entities.items[i]
+			rl.DrawCircleV(e.pos, 50, rl.BLUE)
+		}
+	}
+
 }

@@ -14,6 +14,7 @@ render_scene_to_texture :: proc() {
 	rl.BeginMode2D(world.camera)
 	bg_color: rl.Color = {33, 38, 63, 255}
 	rl.ClearBackground(bg_color)
+	render_entities()
 	rl.EndMode2D()
 	rl.EndTextureMode()
 }

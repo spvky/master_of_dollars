@@ -11,4 +11,7 @@ World :: struct {
 
 
 init_world :: proc() {
+	world.camera = rl.Camera2D {
+		zoom = 1,
+	}
 }

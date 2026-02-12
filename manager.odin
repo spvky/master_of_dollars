@@ -21,6 +21,7 @@ init_entities :: proc() {
 	entities := &world.entities
 	entities.used[0] = true
 	entities.empty_slot = 1
+	spawn_player({50, 50})
 
 }
 
