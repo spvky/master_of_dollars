@@ -22,7 +22,6 @@ init_entities :: proc() {
 	entities.used[0] = true
 	entities.empty_slot = 1
 	spawn_player({50, 50})
-
 }
 
 get_player :: proc() -> ^Entity {
