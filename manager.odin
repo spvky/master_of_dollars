@@ -7,7 +7,7 @@ MAX_ENTITIES :: 1024
 
 Entity_Manager :: struct {
 	items:      [MAX_ENTITIES]Entity,
-	occupied:   [MAX_ENTITIES]bool,
+	used:       [MAX_ENTITIES]bool,
 	empty_slot: Idx,
 	player_idx: Idx,
 }
@@ -17,11 +17,39 @@ Entity_Iter :: struct {
 	idx:      Idx,
 }
 
+init_entities :: proc() {
+	entities := &world.entities
+	entities.used[0] = true
+	entities.empty_slot = 1
+
+}
+
 get_player :: proc() -> ^Entity {
 	return get(world.entities.player_idx)
 }
+
+add :: proc(e: Entity) -> Idx {
+	entities := &world.entities
+	for i in 1 ..< entities.empty_slot {
+		if !entities.used[i] {
+			entities.used[i] = true
+			entities.items[i] = e
+			return i
+		}
+	}
+	if entities.empty_slot > MAX_ENTITIES {
+		log.warn("Max entities in collection, returning nil idx")
+		return 0
+	}
+	entities.used[entities.empty_slot] = true
+	entities.items[entities.empty_slot] = e
+	idx_to_return := entities.empty_slot
+	entities.empty_slot += 1
+	return idx_to_return
+}
+
 get :: proc(idx: Idx) -> ^Entity {
-	if idx == 0 {
+	if idx == 0 && world.entities.used[idx] {
 		log.error("Attempted to `get` at idx = 0")
 		return nil
 	}
@@ -35,7 +63,7 @@ remove :: proc(idx: Idx) {
 	}
 
 	world.entities.items[idx] = Entity{}
-	world.entities.occupied[idx] = false
+	world.entities.used[idx] = false
 }
 
 load_entities_from_file :: proc() {

@@ -4,31 +4,45 @@ Idx :: distinct u16
 
 Entity :: struct {
 	pos:          Vec2,
-	velocity:     Vec2,
+	velo:         Vec2,
+	m_delta:      Vec2,
 	rotation:     f32,
+	traits:       bit_set[Entity_Trait;u64],
+	state:        bit_set[Entity_State],
+	kind:         Entity_Kind,
+	allignment:   Entity_Allignment,
 	target:       Idx,
-	idx:          Idx,
+	prev_idx:     Idx,
+	curr_idx:     Idx,
 	parent_idx:   Idx,
 	child_idx:    Idx,
 	prev_sib_idx: Idx,
 	next_sib_idx: Idx,
 }
 
-Trait :: enum u16 {
+Entity_Trait :: enum u64 {
 	Character,
-	Pickup,
-	Throwable,
+	Auto_Pickup,
 	Grabable,
 	Pocketable,
+	Throwable,
 }
 
-Allignment :: enum {
+Entity_State :: enum u16 {
+	Dead,
+	Stunned,
+	Burning,
+	Wet,
+}
+
+Entity_Allignment :: enum {
 	Neutral,
 	Friendly,
 	Hostile,
 }
 
-Kind :: enum {
+Entity_Kind :: enum {
 	Player,
 	NPC,
+	Object,
 }
