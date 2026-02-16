@@ -6,11 +6,7 @@ import rl "vendor:raylib"
 Idx :: distinct u16
 
 Entity :: struct {
-	pos:          Vec2,
-	velo:         Vec2,
-	m_delta:      Vec2,
-	rotation:     f32,
-	speed:        f32,
+	rigidbody:    Rigidbody,
 	traits:       bit_set[Entity_Trait;u64],
 	state:        bit_set[Entity_State],
 	kind:         Entity_Kind,
@@ -55,8 +51,8 @@ entity_movement :: proc(delta: f32) {
 	entities := &world.entities
 	for i in 1 ..< entities.empty_slot {
 		if entities.used[i] {
-			e := &entities.items[i]
-			e.pos += e.m_delta * e.speed * delta
+			rb := &entities.items.rigidbody[i]
+			rb.pos += rb.m_delta * rb.speed * delta
 		}
 	}
 }
@@ -79,7 +75,7 @@ render_entities :: proc() {
 	for i in 1 ..< entities.empty_slot {
 		if entities.used[i] {
 			e := entities.items[i]
-			rl.DrawCircleV(e.pos, 50, rl.BLUE)
+			rl.DrawCircleV(e.rigidbody.pos, 50, rl.BLUE)
 		}
 	}
 

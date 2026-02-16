@@ -5,8 +5,10 @@ import "core:os"
 
 MAX_ENTITIES :: 1024
 
+Entity_Ptr :: #soa^#soa[MAX_ENTITIES]Entity
+
 Entity_Manager :: struct {
-	items:      [MAX_ENTITIES]Entity,
+	items:      #soa[MAX_ENTITIES]Entity,
 	used:       [MAX_ENTITIES]bool,
 	empty_slot: Idx,
 	player_idx: Idx,
@@ -24,7 +26,7 @@ init_entities :: proc() {
 	spawn_player({50, 50})
 }
 
-get_player :: proc() -> ^Entity {
+get_player :: proc() -> Entity_Ptr {
 	return get(world.entities.player_idx)
 }
 
@@ -48,7 +50,7 @@ add :: proc(e: Entity) -> Idx {
 	return idx_to_return
 }
 
-get :: proc(idx: Idx) -> ^Entity {
+get :: proc(idx: Idx) -> Entity_Ptr {
 	if idx == 0 && world.entities.used[idx] {
 		log.error("Attempted to `get` at idx = 0")
 		return nil
