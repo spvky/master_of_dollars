@@ -59,6 +59,22 @@ get :: proc(idx: Idx) -> Entity_Ptr {
 	return &world.entities.items[idx]
 }
 
+// Unit test this
+shrink_entities :: proc() {
+	entities := &world.entities
+	holes: Idx
+	last_full_slot: Idx
+	for i in 1 ..< entities.empty_slot {
+		if entities.used[i] {
+			last_full_slot = i
+			entities.items[i - holes] = entities.items[i]
+		} else {
+			holes += 1
+		}
+	}
+	entities.empty_slot = last_full_slot
+}
+
 remove :: proc(idx: Idx) {
 	if idx == 0 {
 		log.error("Attempted to `remove` at idx = 0")

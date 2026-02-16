@@ -19,7 +19,6 @@ game_update :: proc() {
 		write_entities_to_file()
 	}
 	player := get_player()
-	log.infof("Player; %v", player.rigidbody)
 	delta := rl.GetFrameTime()
 	set_player_move_delta()
 	entity_movement(delta)
