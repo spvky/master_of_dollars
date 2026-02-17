@@ -19,19 +19,16 @@ Entity_Iter :: struct {
 	idx:      Idx,
 }
 
-init_entities :: proc() {
-	entities := &world.entities
+init_entities :: proc(entities: ^Entity_Manager) {
 	entities.used[0] = true
 	entities.empty_slot = 1
-	spawn_player({50, 50})
 }
 
 get_player :: proc() -> Entity_Ptr {
-	return get(world.entities.player_idx)
+	return get(world.entities, world.entities.player_idx)
 }
 
-add :: proc(e: Entity) -> Idx {
-	entities := &world.entities
+add :: proc(entities: ^Entity_Manager, e: Entity) -> Idx {
 	for i in 1 ..< entities.empty_slot {
 		if !entities.used[i] {
 			entities.used[i] = true
@@ -50,7 +47,7 @@ add :: proc(e: Entity) -> Idx {
 	return idx_to_return
 }
 
-get :: proc(idx: Idx) -> Entity_Ptr {
+get :: proc(entities: Entity_Manager, idx: Idx) -> Entity_Ptr {
 	if idx == 0 && world.entities.used[idx] {
 		log.error("Attempted to `get` at idx = 0")
 		return nil
@@ -60,8 +57,7 @@ get :: proc(idx: Idx) -> Entity_Ptr {
 }
 
 // Unit test this
-shrink_entities :: proc() {
-	entities := &world.entities
+shrink_entities_array :: proc(entities: ^Entity_Manager) {
 	holes: Idx
 	last_full_slot: Idx
 	for i in 1 ..< entities.empty_slot {
@@ -75,19 +71,19 @@ shrink_entities :: proc() {
 	entities.empty_slot = last_full_slot
 }
 
-remove :: proc(idx: Idx) {
+remove :: proc(entities: ^Entity_Manager, idx: Idx) {
 	if idx == 0 {
 		log.error("Attempted to `remove` at idx = 0")
 	}
 
-	world.entities.items[idx] = Entity{}
-	world.entities.used[idx] = false
+	entities.items[idx] = Entity{}
+	entities.used[idx] = false
 }
 
-load_entities_from_file :: proc() {
+load_entities_from_file :: proc(entities: ^Entity_Manager) {
 }
 
-write_entities_to_file :: proc() {
+write_entities_to_file :: proc(entities: Entity_Manager) {
 	file_permissions := 0o644
 	file_flags := os.O_CREATE | os.O_TRUNC | os.O_WRONLY
 
@@ -98,7 +94,7 @@ write_entities_to_file :: proc() {
 	log.info("Opened file")
 	defer os.close(file)
 
-	value_bytes := transmute([size_of(Entity_Manager)]u8)world.entities
+	value_bytes := transmute([size_of(Entity_Manager)]u8)entities
 	bytes_written, write_err := os.write(file, value_bytes[:])
 	if write_err != nil {
 		log.errorf("Failed to write to 'data/entities.bin'\n%v", write_err)

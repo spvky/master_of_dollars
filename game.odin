@@ -10,13 +10,14 @@ game_init :: proc() {
 	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Kick man")
 	init_world()
 	init_assets()
-	init_entities()
+	init_entities(&world.entities)
+	init_player(&world.entities)
 	log.infof("Entitites Size: %v kb", size_of(Entity_Manager) / 1024)
 }
 
 game_update :: proc() {
 	if rl.IsKeyPressed(.SPACE) {
-		write_entities_to_file()
+		write_entities_to_file(world.entities)
 	}
 	player := get_player()
 	delta := rl.GetFrameTime()
