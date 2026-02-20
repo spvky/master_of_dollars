@@ -75,7 +75,7 @@ render_entities :: proc() {
 	for i in 1 ..< entities.empty_slot {
 		if entities.used[i] {
 			e := entities.items[i]
-			rl.DrawCircleV(e.rigidbody.pos, 50, rl.BLUE)
+			rl.DrawCircleV(e.rigidbody.pos, 5, rl.BLUE)
 		}
 	}
 

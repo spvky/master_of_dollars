@@ -13,7 +13,7 @@ get_player :: proc() -> Entity_Ptr {
 
 spawn_player :: proc(entities: ^Entity_Manager, pos: Vec2) {
 	player := Entity {
-		rigidbody = {pos = pos, speed = 10},
+		rigidbody = {pos = pos, speed = 100},
 		traits = {.Character},
 		kind = .Player,
 	}
