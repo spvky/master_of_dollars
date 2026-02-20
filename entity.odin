@@ -51,7 +51,7 @@ entity_movement :: proc(delta: f32) {
 	entities := &world.entities
 	for i in 1 ..< entities.empty_slot {
 		if entities.used[i] {
-			rb := &entities.items.rigidbody[i]
+			rb := &entities.items[i].rigidbody
 			rb.pos += rb.m_delta * rb.speed * delta
 		}
 	}

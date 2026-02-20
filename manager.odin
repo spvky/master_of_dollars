@@ -10,6 +10,7 @@ Entity_Ptr :: #soa^#soa[MAX_ENTITIES]Entity
 Entity_Manager :: struct {
 	items:      #soa[MAX_ENTITIES]Entity,
 	used:       [MAX_ENTITIES]bool,
+	count:      int,
 	empty_slot: Idx,
 	player_idx: Idx,
 }
@@ -19,13 +20,9 @@ Entity_Iter :: struct {
 	idx:      Idx,
 }
 
-init_entities :: proc(entities: ^Entity_Manager) {
+init_entity_manager :: proc(entities: ^Entity_Manager) {
 	entities.used[0] = true
 	entities.empty_slot = 1
-}
-
-get_player :: proc() -> Entity_Ptr {
-	return get(world.entities, world.entities.player_idx)
 }
 
 add :: proc(entities: ^Entity_Manager, e: Entity) -> Idx {
@@ -33,6 +30,7 @@ add :: proc(entities: ^Entity_Manager, e: Entity) -> Idx {
 		if !entities.used[i] {
 			entities.used[i] = true
 			entities.items[i] = e
+			entities.count += 1
 			return i
 		}
 	}
@@ -44,16 +42,17 @@ add :: proc(entities: ^Entity_Manager, e: Entity) -> Idx {
 	entities.items[entities.empty_slot] = e
 	idx_to_return := entities.empty_slot
 	entities.empty_slot += 1
+	entities.count += 1
 	return idx_to_return
 }
 
-get :: proc(entities: Entity_Manager, idx: Idx) -> Entity_Ptr {
+get :: proc(entities: ^Entity_Manager, idx: Idx) -> Entity_Ptr {
 	if idx == 0 && world.entities.used[idx] {
 		log.error("Attempted to `get` at idx = 0")
 		return nil
 	}
 
-	return &world.entities.items[idx]
+	return &entities.items[idx]
 }
 
 // Unit test this
@@ -78,6 +77,8 @@ remove :: proc(entities: ^Entity_Manager, idx: Idx) {
 
 	entities.items[idx] = Entity{}
 	entities.used[idx] = false
+	entities.count -= 1
+	shrink_entities_array(entities)
 }
 
 load_entities_from_file :: proc(entities: ^Entity_Manager) {

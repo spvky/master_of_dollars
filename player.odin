@@ -7,6 +7,10 @@ init_player :: proc(entities: ^Entity_Manager) {
 	spawn_player(entities, {50, 50})
 }
 
+get_player :: proc() -> Entity_Ptr {
+	return get(&world.entities, world.entities.player_idx)
+}
+
 spawn_player :: proc(entities: ^Entity_Manager, pos: Vec2) {
 	player := Entity {
 		rigidbody = {pos = pos, speed = 10},

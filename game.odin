@@ -10,7 +10,7 @@ game_init :: proc() {
 	rl.InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Kick man")
 	init_world()
 	init_assets()
-	init_entities(&world.entities)
+	init_entity_manager(&world.entities)
 	init_player(&world.entities)
 	log.infof("Entitites Size: %v kb", size_of(Entity_Manager) / 1024)
 }
