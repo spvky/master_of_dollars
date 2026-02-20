@@ -3,6 +3,8 @@ package main
 import l "core:math/linalg"
 import rl "vendor:raylib"
 
+Player_Data :: struct {}
+
 init_player :: proc(entities: ^Entity_Manager) {
 	spawn_player(entities, {50, 50})
 }
@@ -15,7 +17,7 @@ spawn_player :: proc(entities: ^Entity_Manager, pos: Vec2) {
 	player := Entity {
 		rigidbody = {pos = pos, speed = 100},
 		traits = {.Character},
-		kind = .Player,
+		kind = Player_Data{},
 	}
 	player_idx := add(entities, player)
 	entities.player_idx = player_idx
