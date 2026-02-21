@@ -32,3 +32,7 @@ set_player_move_delta :: proc() {
 	if rl.IsKeyDown(.D) {move_delta.x += 1}
 	player.rigidbody.m_delta = l.normalize0(move_delta)
 }
+
+player_pickup :: proc() {
+	player := get_player()
+}

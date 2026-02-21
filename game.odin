@@ -12,6 +12,7 @@ game_init :: proc() {
 	init_assets()
 	init_entity_manager(&world.entities)
 	init_player(&world.entities)
+	spawn_grenade(&world.entities, {100, 100})
 	log.infof("Entitites Size: %v kb", size_of(Entity_Manager) / 1024)
 }
 
@@ -19,7 +20,6 @@ game_update :: proc() {
 	if rl.IsKeyPressed(.SPACE) {
 		write_entities_to_file(world.entities)
 	}
-	player := get_player()
 	delta := rl.GetFrameTime()
 	set_player_move_delta()
 	entity_movement(delta)

@@ -79,7 +79,13 @@ render_entities :: proc() {
 	for i in 1 ..< entities.empty_slot {
 		if entities.used[i] && entities.items.relations[i].parent_idx == 0 {
 			e := entities.items[i]
-			rl.DrawCircleV(e.rigidbody.pos, 5, rl.BLUE)
+			switch v in e.kind {
+			case Player_Data:
+				rl.DrawCircleV(e.rigidbody.pos, 5, rl.BLUE)
+			case Object_Data:
+				render_object(e, v)
+			case NPC_Data:
+			}
 		}
 	}
 
